@@ -1,22 +1,10 @@
-package main
+package spotify
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
-	"log"
 	"net/url"
 	"os"
 )
-
-func main() {
-	err := godotenv.Load("../.env")
-	if err != nil {
-		log.Panic("Couldn't load env variables")
-	}
-
-	fmt.Println(GetLoginLink())
-
-}
 
 func GetLoginLink() string {
 	const scopes = "user-read-playback-state user-modify-playback-state"

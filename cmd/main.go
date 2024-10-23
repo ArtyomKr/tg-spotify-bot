@@ -5,10 +5,11 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"telegram-bot/internal/message"
 )
 
 func main() {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Panic("Couldn't load env variables")
 	}
@@ -20,7 +21,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	bot.Debug = false
+	bot.Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -30,11 +31,12 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 
 	for update := range updates {
+		log.Printf(update.Message.CommandArguments())
 		if update.Message != nil { // If we got a message
 			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-			msg.ReplyToMessageID = update.Message.MessageID
+			msg := message.Process(update.Message)
+			//msg.ReplyToMessageID = update.Message.MessageID
 
 			bot.Send(msg)
 		}
