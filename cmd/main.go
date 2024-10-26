@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"telegram-bot/internal/message"
+	"telegram-bot/internal/server"
 )
 
 func main() {
@@ -14,6 +15,10 @@ func main() {
 		log.Panic("Couldn't load env variables")
 	}
 
+	port := os.Getenv("PORT")
+	srv := server.New(port)
+	srv.Listen()
+
 	token := os.Getenv("TG_BOT_TOKEN")
 	log.Printf("Starting the bot with token %v", token)
 
@@ -21,7 +26,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	bot.Debug = true
+	bot.Debug = false
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
