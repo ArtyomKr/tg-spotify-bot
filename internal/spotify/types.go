@@ -7,12 +7,6 @@ type Client struct {
 	apiURL       string
 }
 
-type AuthBody struct {
-	GrantType   string
-	Code        string
-	RedirectUri string
-}
-
 type TokenResBody struct {
 	AccessToken  string `json:"access_token"`
 	TokenType    string `json:"token_type"`
