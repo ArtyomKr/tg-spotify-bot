@@ -3,20 +3,16 @@ package server
 import (
 	"log"
 	"net/http"
+	"telegram-bot/internal/storage"
 )
 
-type UserData struct {
-	code  string
-	token string
-}
-
 type Server struct {
-	port string
-	data map[string]UserData
+	port    string
+	storage storage.UserStorage
 }
 
-func New(port string) *Server {
-	return &Server{port: port}
+func New(port string, storage storage.UserStorage) *Server {
+	return &Server{port, storage}
 }
 
 func (s *Server) Listen() {
