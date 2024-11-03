@@ -3,20 +3,22 @@ package bot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
+	"telegram-bot/internal/auth"
 	"telegram-bot/internal/spotify"
 	"telegram-bot/internal/storage"
 )
 
-func NewBot(token string, storage storage.UserStorage) (*Bot, error) {
+func NewBot(token string, storage storage.UserStorage, spotifyAPI *spotify.Client, spotifyAuth *auth.Manager) (*Bot, error) {
 	api, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Bot{
-		api:        api,
-		spotifyAPI: spotify.NewClient(),
-		storage:    storage,
+		api,
+		spotifyAPI,
+		storage,
+		spotifyAuth,
 	}, nil
 }
 
