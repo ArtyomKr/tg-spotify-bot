@@ -58,3 +58,40 @@ func (c *Client) GetToken(code string) (TokenResBody, error) {
 
 	return tokenRes, nil
 }
+
+func (c *Client) RefreshToken(refreshToken string) (TokenResBody, error) {
+	authCode := base64.StdEncoding.EncodeToString([]byte(c.clientID + ":" + c.clientSecret))
+
+	formData := url.Values{}
+	formData.Set("refresh_token", refreshToken)
+	formData.Set("grant_type", "refresh_token")
+
+	req, err := http.NewRequest("POST", c.apiURL+"/token", strings.NewReader(formData.Encode()))
+	if err != nil {
+		log.Printf("Req error: %v", err)
+		return TokenResBody{}, err
+	}
+
+	req.Header.Set("Authorization", "Basic "+authCode)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		log.Printf("Sending error: %v", err)
+		return TokenResBody{}, err
+	}
+	defer res.Body.Close()
+
+	var tokenRes TokenResBody
+	if err := json.NewDecoder(res.Body).Decode(&tokenRes); err != nil {
+		log.Printf("Response error: %v", err)
+		return TokenResBody{}, err
+	}
+
+	if tokenRes.RefreshToken == "" {
+		tokenRes.RefreshToken = refreshToken
+	}
+
+	return tokenRes, nil
+}
