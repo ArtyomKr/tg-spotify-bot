@@ -4,8 +4,10 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"telegram-bot/internal/auth"
 	"telegram-bot/internal/bot"
 	"telegram-bot/internal/server"
+	"telegram-bot/internal/spotify"
 	"telegram-bot/internal/storage"
 )
 
@@ -19,11 +21,12 @@ func main() {
 	token := os.Getenv("TG_BOT_TOKEN")
 
 	userStorage := storage.NewStorage()
-
+	spotifyClient := spotify.NewClient()
+	spotifyAuth := auth.NewManager(userStorage, spotifyClient)
 	srv := server.New(port, userStorage)
-	srv.Listen()
 
-	tgbot, err := bot.NewBot(token, userStorage)
+	srv.Listen()
+	tgbot, err := bot.NewBot(token, userStorage, spotifyClient, spotifyAuth)
 	if err != nil {
 		log.Fatal(err)
 	}

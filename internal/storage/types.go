@@ -1,10 +1,16 @@
 package storage
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 type UserData struct {
-	Code  string
-	Token string
+	Code         string
+	AccessToken  string
+	ExpiresIn    int
+	RefreshToken string
+	ExpiresAt    time.Time
 }
 
 type UserStorage interface {

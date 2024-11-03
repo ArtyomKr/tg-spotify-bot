@@ -2,7 +2,6 @@ package bot
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"log"
 	"strconv"
 )
 
@@ -12,6 +11,9 @@ func (b *Bot) handleMessage(msg *tgbotapi.Message) tgbotapi.MessageConfig {
 		return b.handleLogin(msg)
 	case "/token":
 		return b.handleToken(msg)
+	case "/current":
+		return b.handleCurrent(msg)
+
 	default:
 		return b.handleUnknownCommand(msg)
 	}
@@ -25,17 +27,30 @@ func (b *Bot) handleLogin(msg *tgbotapi.Message) tgbotapi.MessageConfig {
 
 func (b *Bot) handleToken(msg *tgbotapi.Message) tgbotapi.MessageConfig {
 	id := strconv.FormatInt(msg.From.ID, 10)
-	userData, ok := b.storage.Get(id)
-	if !ok {
-		return tgbotapi.NewMessage(msg.Chat.ID, "You are not authorized with spotify")
+	token, err := b.spotifyAuth.GetToken(id)
+	//if err != nil {
+	//	return tgbotapi.NewMessage(msg.Chat.ID, "You are not authorized with spotify")
+	//} // TODO: handle unauthorized requests
+	if err != nil {
+		return tgbotapi.NewMessage(msg.Chat.ID, "Authorization failed")
 	}
 
-	tokenData, err := b.spotifyAPI.GetToken(userData.Code)
+	return tgbotapi.NewMessage(msg.Chat.ID, token)
+}
+
+func (b *Bot) handleCurrent(msg *tgbotapi.Message) tgbotapi.MessageConfig {
+	id := strconv.FormatInt(msg.From.ID, 10)
+	token, err := b.spotifyAuth.GetToken(id)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return tgbotapi.NewMessage(msg.Chat.ID, "Failed to get token")
+		return tgbotapi.NewMessage(msg.Chat.ID, "Authorization failed")
 	}
-	return tgbotapi.NewMessage(msg.Chat.ID, tokenData.AccessToken+" "+tokenData.TokenType+""+strconv.Itoa(tokenData.ExpiresIn)+"\n")
+
+	currentTrack, err := b.spotifyAPI.GetCurrentTrack(token)
+	if err != nil {
+		return tgbotapi.NewMessage(msg.Chat.ID, "Couldn't get playback status")
+	}
+
+	return tgbotapi.NewMessage(msg.Chat.ID, currentTrack.Item.Name)
 }
 
 func (b *Bot) handleUnknownCommand(msg *tgbotapi.Message) tgbotapi.MessageConfig {
