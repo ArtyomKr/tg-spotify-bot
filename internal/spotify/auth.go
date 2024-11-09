@@ -33,7 +33,7 @@ func (c *Client) GetToken(code string) (TokenResBody, error) {
 	formData.Set("code", code)
 	formData.Set("redirect_uri", c.redirectURI)
 
-	req, err := http.NewRequest("POST", c.apiURL+"/token", strings.NewReader(formData.Encode()))
+	req, err := http.NewRequest("POST", SPOTIFY_AUTH_URL+"/token", strings.NewReader(formData.Encode()))
 	if err != nil {
 		log.Printf("Req error: %v", err)
 		return TokenResBody{}, err
@@ -42,8 +42,7 @@ func (c *Client) GetToken(code string) (TokenResBody, error) {
 	req.Header.Set("Authorization", "Basic "+authCode)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	client := &http.Client{}
-	res, err := client.Do(req)
+	res, err := c.httpClient.Do(req)
 	if err != nil {
 		log.Printf("Sending error: %v", err)
 		return TokenResBody{}, err
@@ -66,7 +65,7 @@ func (c *Client) RefreshToken(refreshToken string) (TokenResBody, error) {
 	formData.Set("refresh_token", refreshToken)
 	formData.Set("grant_type", "refresh_token")
 
-	req, err := http.NewRequest("POST", c.apiURL+"/token", strings.NewReader(formData.Encode()))
+	req, err := http.NewRequest("POST", SPOTIFY_AUTH_URL+"/token", strings.NewReader(formData.Encode()))
 	if err != nil {
 		log.Printf("Req error: %v", err)
 		return TokenResBody{}, err
@@ -75,8 +74,7 @@ func (c *Client) RefreshToken(refreshToken string) (TokenResBody, error) {
 	req.Header.Set("Authorization", "Basic "+authCode)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	client := &http.Client{}
-	res, err := client.Do(req)
+	res, err := c.httpClient.Do(req)
 	if err != nil {
 		log.Printf("Sending error: %v", err)
 		return TokenResBody{}, err

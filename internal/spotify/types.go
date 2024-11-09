@@ -6,7 +6,7 @@ type Client struct {
 	clientID     string
 	clientSecret string
 	redirectURI  string
-	apiURL       string
+	baseUrl      string
 	httpClient   *http.Client
 }
 
@@ -18,7 +18,7 @@ type TokenResBody struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-type SpotifyPlaybackStatusRes struct {
+type PlaybackStatus struct {
 	Device struct {
 		ID               string `json:"id"`
 		IsActive         bool   `json:"is_active"`
