@@ -1,35 +1,18 @@
 package spotify
 
-import (
-	"encoding/json"
-	"log"
-	"net/http"
-)
+import "net/url"
 
-const playerUrl = "https://api.spotify.com/v1/me/player"
+func (c *Client) GetCurrentTrack(token string) (PlaybackStatus, error) {
+	var playbackStatus PlaybackStatus
+	err := c.fetch("GET", "/me/player/currently-playing", token, nil, nil, &playbackStatus)
 
-func (c *Client) GetCurrentTrack(token string) (SpotifyPlaybackStatusRes, error) {
-	req, err := http.NewRequest("GET", playerUrl+"/currently-playing", nil)
-	if err != nil {
-		log.Printf("Req error: %v", err)
-		return SpotifyPlaybackStatusRes{}, err
-	}
+	return playbackStatus, err
+}
 
-	req.Header.Set("Authorization", "Bearer "+token)
+func (c *Client) AddTrackToQueue(token string, URI string) error {
+	query := url.Values{}
+	query.Add("uri", URI)
+	err := c.fetch("POST", "/me/player/queue", token, query, nil, nil)
 
-	client := &http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		log.Printf("Sending error: %v", err)
-		return SpotifyPlaybackStatusRes{}, err
-	}
-	defer res.Body.Close()
-
-	var playbackStatusRes SpotifyPlaybackStatusRes
-	if err := json.NewDecoder(res.Body).Decode(&playbackStatusRes); err != nil {
-		log.Printf("Response error: %v", err)
-		return SpotifyPlaybackStatusRes{}, err
-	}
-
-	return playbackStatusRes, nil
+	return err
 }
