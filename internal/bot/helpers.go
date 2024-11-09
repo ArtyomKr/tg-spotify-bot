@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var spotifyTrackPattern = regexp.MustCompile(`^(?:https?:\/\/)?(?:open\.)?spotify\.com\/track\/([a-zA-Z0-9]+)`)
+var spotifyTrackPattern = regexp.MustCompile(`^(?:https?://)?(?:open\.)?spotify\.com/track/([a-zA-Z0-9]+)`)
 
 func formatDuration(ms int) string {
 	d := time.Duration(ms) * time.Millisecond
