@@ -20,7 +20,10 @@ func main() {
 	port := os.Getenv("PORT")
 	token := os.Getenv("TG_BOT_TOKEN")
 
-	userStorage := storage.NewStorage()
+	userStorage, err := storage.NewStorage("storage/users.json")
+	if err != nil {
+		log.Panic("Couldn't create storage file")
+	}
 	spotifyClient := spotify.NewClient()
 	spotifyAuth := auth.NewManager(userStorage, spotifyClient)
 	srv := server.New(port, userStorage)

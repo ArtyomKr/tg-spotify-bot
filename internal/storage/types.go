@@ -14,12 +14,13 @@ type UserData struct {
 }
 
 type UserStorage interface {
-	Set(userID string, data UserData)
+	Set(userID string, data UserData) error
 	Get(userID string) (UserData, bool)
-	Delete(userID string)
+	Delete(userID string) error
 }
 
-type MemoryStorage struct {
-	mu   sync.Mutex
-	data map[string]UserData
+type FileStorage struct {
+	mu       sync.Mutex
+	data     map[string]UserData
+	filepath string
 }

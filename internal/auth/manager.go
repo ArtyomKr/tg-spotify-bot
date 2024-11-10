@@ -38,13 +38,15 @@ func (m *Manager) getInitialToken(userID string, code string) (string, error) {
 		return "", err
 	}
 
-	m.storage.Set(userID, storage.UserData{
+	if err := m.storage.Set(userID, storage.UserData{
 		Code:         code,
 		AccessToken:  tokenData.AccessToken,
 		RefreshToken: tokenData.RefreshToken,
 		ExpiresIn:    tokenData.ExpiresIn,
 		ExpiresAt:    time.Now().Add(time.Second * time.Duration(tokenData.ExpiresIn)),
-	})
+	}); err != nil {
+		return "", err
+	}
 
 	return tokenData.AccessToken, nil
 }
@@ -60,7 +62,9 @@ func (m *Manager) refreshToken(userID string, userData storage.UserData) (string
 	userData.ExpiresIn = tokenData.ExpiresIn
 	userData.ExpiresAt = time.Now().Add(time.Second * time.Duration(tokenData.ExpiresIn))
 
-	m.storage.Set(userID, userData)
+	if err := m.storage.Set(userID, userData); err != nil {
+		return "", err
+	}
 	return tokenData.AccessToken, nil
 }
 
