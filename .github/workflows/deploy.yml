@@ -45,4 +45,15 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "main"
           target: "tg-bot"
-            
+          
+      - name: Execute binary
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd tg-bot
+            chmod +x main
+            sudo systemctl restart tgbot.service
+            sudo systemctl status tgbot.service
