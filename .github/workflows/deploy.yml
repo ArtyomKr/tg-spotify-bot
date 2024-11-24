@@ -55,5 +55,10 @@ jobs:
           script: |
             cd tg-bot
             chmod +x main
-            sudo systemctl restart tgbot.service
-            sudo systemctl status tgbot.service
+            sudo systemctl restart tgbot
+            if ! sudo systemctl is-active --quiet tgbot; then
+              echo "Service failed to start"
+              sudo systemctl status tgbot --no-pager
+              exit 1
+            fi
+            sudo systemctl status tgbot --no-pager
