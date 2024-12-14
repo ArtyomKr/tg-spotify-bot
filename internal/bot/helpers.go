@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var spotifyTrackPattern = regexp.MustCompile(`^(?:https?://)?(?:open\.)?spotify\.com/track/([a-zA-Z0-9]+)`)
+var spotifyTrackPattern = regexp.MustCompile(`(?:https?://)?(?:open\.)?spotify\.com/track/([a-zA-Z0-9]+)`)
 
 func formatDuration(ms int) string {
 	d := time.Duration(ms) * time.Millisecond
@@ -26,12 +26,16 @@ func formatPlaybackProgress(progress, total int) string {
 	)
 }
 
-func getSpotifyURI(url string) (string, bool) {
-	matches := spotifyTrackPattern.FindStringSubmatch(url)
+func getSpotifyURI(url string) []string {
+	matches := spotifyTrackPattern.FindAllStringSubmatch(url, -1)
+	URIs := make([]string, 0, len(matches))
 
-	if len(matches) < 2 {
-		return "", false
+	for _, match := range matches {
+		if len(match) >= 2 {
+			URI := "spotify:track:" + match[1]
+			URIs = append(URIs, URI)
+		}
 	}
 
-	return "spotify:track:" + matches[1], true
+	return URIs
 }

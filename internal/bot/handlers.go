@@ -87,19 +87,26 @@ func (b *Bot) handleQueue(msg *tgbotapi.Message, uri string) tgbotapi.MessageCon
 		return tgbotapi.NewMessage(msg.Chat.ID, "Authorization failed")
 	}
 
-	err = b.spotifyAPI.AddTrackToQueue(token, uri)
-	if err != nil {
-		log.Printf("Req error: %v", err)
-		return tgbotapi.NewMessage(msg.Chat.ID, "Couldn't add track to queue")
+	for _, uri := range uris {
+		err = b.spotifyAPI.AddTrackToQueue(token, uri)
+		if err != nil {
+			log.Printf("Req error: %v", err)
+			return tgbotapi.NewMessage(msg.Chat.ID, "Couldn't add track to queue")
+		}
 	}
 
-	return tgbotapi.NewMessage(msg.Chat.ID, "Added track to queue")
+	successText := "Added track to queue"
+	if len(uris) > 1 {
+		successText = "Added tracks to queue"
+	}
+
+	return tgbotapi.NewMessage(msg.Chat.ID, successText)
 }
 
 func (b *Bot) handleUnknownCommand(msg *tgbotapi.Message) tgbotapi.MessageConfig {
-	uri, ok := getSpotifyURI(msg.Text)
-	if ok {
-		return b.handleQueue(msg, uri)
+	uris := getSpotifyURI(msg.Text)
+	if len(uris) != 0 {
+		return b.addToQueue(msg, uris)
 	}
 	return tgbotapi.NewMessage(msg.Chat.ID, "Unknown command")
 }
