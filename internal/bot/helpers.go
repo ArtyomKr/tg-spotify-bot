@@ -15,11 +15,25 @@ func formatDuration(ms int) string {
 }
 
 func formatPlaybackProgress(progress, total int) string {
-	const barLength = 14
+	const barLength = 20
 	percentage := float64(progress) / float64(total)
 	completed := int(percentage * float64(barLength))
-	bar := strings.Repeat("─", completed) + "●" + strings.Repeat("━", barLength-completed)
-	return fmt.Sprintf("%s %s %s",
+
+	bar := strings.Repeat("▰", completed) + strings.Repeat("▱", barLength-completed)
+
+	// Add emoji indicators based on progress
+	var indicator string
+	switch {
+	case percentage < 0.33:
+		indicator = "⏳"
+	case percentage < 0.66:
+		indicator = "🎵"
+	default:
+		indicator = "🎶"
+	}
+
+	return fmt.Sprintf("%s %s <code>%s</code> %s",
+		indicator,
 		formatDuration(progress),
 		bar,
 		formatDuration(total),
