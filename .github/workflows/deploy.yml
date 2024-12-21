@@ -3,8 +3,6 @@ name: Build_&_deploy
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
 
