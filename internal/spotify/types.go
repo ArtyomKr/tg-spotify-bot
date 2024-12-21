@@ -28,20 +28,21 @@ type Artist struct {
 }
 
 type Album struct {
-	AlbumType            string       `json:"album_type"`
-	TotalTracks          int          `json:"total_tracks"`
-	AvailableMarkets     []string     `json:"available_markets"`
-	ExternalUrls         ExternalURLs `json:"external_urls"`
-	Href                 string       `json:"href"`
-	ID                   string       `json:"id"`
-	Images               []Image      `json:"images"`
-	Name                 string       `json:"name"`
-	ReleaseDate          string       `json:"release_date"`
-	ReleaseDatePrecision string       `json:"release_date_precision"`
-	Restrictions         Restrictions `json:"restrictions"`
-	Type                 string       `json:"type"`
-	URI                  string       `json:"uri"`
-	Artists              []Artist     `json:"artists"`
+	AlbumType            string               `json:"album_type"`
+	TotalTracks          int                  `json:"total_tracks"`
+	AvailableMarkets     []string             `json:"available_markets"`
+	ExternalUrls         ExternalURLs         `json:"external_urls"`
+	Href                 string               `json:"href"`
+	ID                   string               `json:"id"`
+	Images               []Image              `json:"images"`
+	Name                 string               `json:"name"`
+	ReleaseDate          string               `json:"release_date"`
+	ReleaseDatePrecision string               `json:"release_date_precision"`
+	Restrictions         Restrictions         `json:"restrictions"`
+	Type                 string               `json:"type"`
+	URI                  string               `json:"uri"`
+	Artists              []Artist             `json:"artists"`
+	Tracks               PaginatedType[Track] `json:"tracks"`
 }
 
 type Track struct {
@@ -85,6 +86,16 @@ type Image struct {
 
 type Restrictions struct {
 	Reason string `json:"reason"`
+}
+
+type PaginatedType[T any] struct {
+	Href     string `json:"href"`
+	Limit    int    `json:"limit"`
+	Next     string `json:"next"`
+	Offset   int    `json:"offset"`
+	Previous string `json:"previous"`
+	Total    int    `json:"total"`
+	Items    []T    `json:"items"`
 }
 
 type Device struct {
