@@ -48,7 +48,7 @@ func (c *Client) fetch(method string, path string, token string, query url.Value
 
 	if result != nil {
 		if err := json.NewDecoder(res.Body).Decode(result); err != nil {
-			return fmt.Errorf("decoding json failed: %d", res.StatusCode)
+			return fmt.Errorf("decoding json failed: %w", err)
 		}
 	}
 
