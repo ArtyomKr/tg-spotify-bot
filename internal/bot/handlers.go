@@ -102,5 +102,10 @@ func (b *Bot) handleUnknownCommand(msg *tgbotapi.Message) tgbotapi.MessageConfig
 		return b.addAlbumToQueue(msg, albumID)
 	}
 
+	playlistID := getPlaylistIDFromString(msg.Text)
+	if len(playlistID) != 0 {
+		return b.addPlaylistToQueue(msg, playlistID)
+	}
+
 	return tgbotapi.NewMessage(msg.Chat.ID, "Unknown command")
 }

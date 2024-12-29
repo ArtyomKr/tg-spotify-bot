@@ -52,3 +52,27 @@ func (b *Bot) addAlbumToQueue(msg *tgbotapi.Message, albumID string) tgbotapi.Me
 
 	return tgbotapi.NewMessage(msg.Chat.ID, "Couldn't add this album to queue")
 }
+
+func (b *Bot) addPlaylistToQueue(msg *tgbotapi.Message, playlistID string) tgbotapi.MessageConfig {
+	id := strconv.FormatInt(msg.From.ID, 10)
+	token, err := b.spotifyAuth.GetToken(id)
+	if err != nil {
+		return tgbotapi.NewMessage(msg.Chat.ID, "Authorization failed")
+	}
+
+	tracks, err := b.spotifyAPI.GetPlaylistTracks(token, playlistID)
+	if err != nil {
+		return tgbotapi.NewMessage(msg.Chat.ID, "Could not get playlist")
+	}
+
+	trackURIs := make([]string, len(tracks.Items))
+	for i, track := range tracks.Items {
+		trackURIs[i] = track.Track.URI
+	}
+
+	if len(trackURIs) != 0 {
+		return b.addTrackToQueue(msg, trackURIs)
+	}
+
+	return tgbotapi.NewMessage(msg.Chat.ID, "Couldn't add this playlist to queue")
+}
