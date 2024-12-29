@@ -68,6 +68,23 @@ type Track struct {
 	IsLocal          bool         `json:"is_local"`
 }
 
+type PlaylistTrack struct {
+	AddedAt string `json:"added_at"`
+	AddedBy struct {
+		ExternalURLs ExternalURLs `json:"external_urls"`
+		Followers    struct {
+			Href  string `json:"href"`
+			Total int    `json:"total"`
+		} `json:"followers"`
+		Href string `json:"href"`
+		ID   string `json:"id"`
+		Type string `json:"type"`
+		URI  string `json:"uri"`
+	} `json:"added_by"`
+	IsLocal bool  `json:"is_local"`
+	Track   Track `json:"track"`
+}
+
 type ExternalIDs struct {
 	ISRC string `json:"isrc"`
 	EAN  string `json:"ean"`
@@ -110,7 +127,7 @@ type Device struct {
 }
 
 type PlaybackStatus struct {
-	Device       `json:"device"`
+	Device       Device `json:"device"`
 	RepeatState  string `json:"repeat_state"`
 	ShuffleState bool   `json:"shuffle_state"`
 	Context      struct {
@@ -123,7 +140,7 @@ type PlaybackStatus struct {
 	ProgressMs int  `json:"progress_ms"`
 	IsPlaying  bool `json:"is_playing"`
 	Item       struct {
-		Album            `json:"album"`
+		Album            Album        `json:"album"`
 		Artists          []Artist     `json:"artists"`
 		AvailableMarkets []string     `json:"available_markets"`
 		DiscNumber       int          `json:"disc_number"`

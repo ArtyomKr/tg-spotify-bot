@@ -6,6 +6,7 @@ import (
 
 var spotifyTrackPattern = regexp.MustCompile(`(?:https?://)?(?:open\.)?spotify\.com/track/([a-zA-Z0-9]+)`)
 var spotifyAlbumPattern = regexp.MustCompile(`(?:https?://)?(?:open\.)?spotify\.com/album/([a-zA-Z0-9]+)`)
+var spotifyPlaylistPattern = regexp.MustCompile(`(?:https?://)?(?:open\.)?spotify\.com/playlist/([a-zA-Z0-9]+)`)
 
 func getTrackIDsFromString(url string) []string {
 	matches := spotifyTrackPattern.FindAllStringSubmatch(url, -1)
@@ -29,6 +30,17 @@ func getAlbumIDFromString(url string) string {
 	var ID string
 
 	match := spotifyAlbumPattern.FindStringSubmatch(url)
+	if len(match) >= 2 {
+		ID = match[1]
+	}
+
+	return ID
+}
+
+func getPlaylistIDFromString(url string) string {
+	var ID string
+
+	match := spotifyPlaylistPattern.FindStringSubmatch(url)
 	if len(match) >= 2 {
 		ID = match[1]
 	}
