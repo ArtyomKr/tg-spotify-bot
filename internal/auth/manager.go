@@ -2,9 +2,10 @@ package auth
 
 import (
 	"errors"
-	"telegram-bot/internal/spotify"
-	"telegram-bot/internal/storage"
 	"time"
+
+	"github.com/ArtyomKr/tg-spotify-bot/internal/spotify"
+	"github.com/ArtyomKr/tg-spotify-bot/internal/storage"
 )
 
 type Manager struct {

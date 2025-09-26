@@ -1,8 +1,6 @@
 package spotify
 
-import (
-	"net/url"
-)
+import "net/url"
 
 func (c *Client) GetPlaylistTracks(token string, playlistID string) (PaginatedType[PlaylistTrack], error) {
 	var tracks PaginatedType[PlaylistTrack]

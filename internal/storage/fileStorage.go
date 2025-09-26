@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func NewStorage(path string) (*FileStorage, error) {
+func New(path string) (*FileStorage, error) {
 	storage := &FileStorage{
 		data:     make(map[string]UserData),
 		filepath: path,

@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
 	"log"
 	"os"
-	"telegram-bot/api"
-	"telegram-bot/internal/auth"
-	"telegram-bot/internal/bot"
-	"telegram-bot/internal/spotify"
-	"telegram-bot/internal/storage"
+
+	"github.com/ArtyomKr/tg-spotify-bot/internal/api"
+	"github.com/ArtyomKr/tg-spotify-bot/internal/auth"
+	"github.com/ArtyomKr/tg-spotify-bot/internal/bot"
+	"github.com/ArtyomKr/tg-spotify-bot/internal/spotify"
+	"github.com/ArtyomKr/tg-spotify-bot/internal/storage"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -20,10 +21,12 @@ func main() {
 	port := os.Getenv("PORT")
 	token := os.Getenv("TG_BOT_TOKEN")
 
-	userStorage, err := storage.NewStorage("storage/users.json")
+	userStorage, err := storage.NewSqlLiteStorage("./users.db")
 	if err != nil {
 		log.Panic("Couldn't create storage file")
 	}
+	defer userStorage.Close()
+
 	spotifyClient := spotify.NewClient()
 	spotifyAuth := auth.NewManager(userStorage, spotifyClient)
 	srv := api.New(port, userStorage)

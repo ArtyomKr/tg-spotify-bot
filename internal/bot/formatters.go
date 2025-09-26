@@ -2,8 +2,8 @@ package bot
 
 import (
 	"fmt"
+	"github.com/ArtyomKr/tg-spotify-bot/internal/spotify"
 	"strings"
-	"telegram-bot/internal/spotify"
 	"time"
 )
 

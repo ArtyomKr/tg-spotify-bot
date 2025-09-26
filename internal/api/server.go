@@ -3,7 +3,8 @@ package api
 import (
 	"log"
 	"net/http"
-	"telegram-bot/internal/storage"
+
+	"github.com/ArtyomKr/tg-spotify-bot/internal/storage"
 )
 
 type Server struct {
