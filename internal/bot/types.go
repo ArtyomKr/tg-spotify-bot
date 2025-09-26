@@ -1,10 +1,10 @@
 package bot
 
 import (
+	"github.com/ArtyomKr/tg-spotify-bot/internal/auth"
+	"github.com/ArtyomKr/tg-spotify-bot/internal/spotify"
+	"github.com/ArtyomKr/tg-spotify-bot/internal/storage"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"telegram-bot/internal/auth"
-	"telegram-bot/internal/spotify"
-	"telegram-bot/internal/storage"
 )
 
 type Bot struct {

@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"sync"
 	"time"
 )
@@ -23,4 +24,8 @@ type FileStorage struct {
 	mu       sync.Mutex
 	data     map[string]UserData
 	filepath string
+}
+
+type SQLiteUserStorage struct {
+	db *sql.DB
 }
